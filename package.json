@@ -1,0 +1,19 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "Cloned the existing repo and added the Readme file in Gitlab and practiced the git basic command, and created a board in trello",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.thewitslab.com/piyush.rawat/week_1.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
