@@ -8,110 +8,116 @@ let currentFilter = "all"
 addBtn.addEventListener("click", addTask)
 
 taskInput.addEventListener("keypress", function(e){
-if(e.key === "Enter"){
-addTask()
-}
+  if(e.key === "Enter"){
+    addTask()
+  }
 })
 
 function saveTasks(){
-localStorage.setItem("tasks", JSON.stringify(tasks))
+  localStorage.setItem("tasks", JSON.stringify(tasks))
 }
 
 function addTask(){
 
-const text = taskInput.value.trim()
+  const text = taskInput.value.trim()
 
-if(text === "") return
+  if(text === "") return
 
-tasks.push({
-text:text,
-completed:false
-})
+  tasks.push({
+    id: Date.now(),
+    text:text,
+    completed:false
+  })
 
-taskInput.value=""
+  taskInput.value=""
 
-saveTasks()
-renderTasks()
+  saveTasks()
+  renderTasks()
 }
 
-function deleteTask(index){
-tasks.splice(index,1)
-saveTasks()
-renderTasks()
+function deleteTask(id){
+  tasks = tasks.filter(task => task.id !== id)
+  saveTasks()
+  renderTasks()
 }
 
-function toggleTask(index){
+function toggleTask(id){
 
-tasks[index].completed=!tasks[index].completed
+  const task = tasks.find(task => task.id === id)
 
-tasks.sort((a,b)=>a.completed-b.completed)
+  if(task){
+    task.completed = !task.completed
+  }
 
-saveTasks()
-renderTasks()
+  tasks.sort((a,b)=>a.completed-b.completed)
+
+  saveTasks()
+  renderTasks()
 }
 
-function editTask(index){
+function editTask(id){
 
-const newText = prompt("Edit task", tasks[index].text)
+  const task = tasks.find(task => task.id === id)
 
-if(newText){
-tasks[index].text=newText
-saveTasks()
-renderTasks()
-}
+  const newText = prompt("Edit task", task.text)
 
+  if(newText){
+    task.text = newText
+    saveTasks()
+    renderTasks()
+  }
 }
 
 function filterTasks(type){
-currentFilter=type
-renderTasks()
+  currentFilter = type
+  renderTasks()
 }
 
 function renderTasks(){
 
-taskList.innerHTML=""
+  taskList.innerHTML=""
 
-let filteredTasks=tasks
+  let filteredTasks = tasks
 
-if(currentFilter==="pending"){
-filteredTasks=tasks.filter(t=>!t.completed)
-}
+  if(currentFilter==="pending"){
+    filteredTasks = tasks.filter(t=>!t.completed)
+  }
 
-if(currentFilter==="completed"){
-filteredTasks=tasks.filter(t=>t.completed)
-}
+  if(currentFilter==="completed"){
+    filteredTasks = tasks.filter(t=>t.completed)
+  }
 
-filteredTasks.forEach((task,index)=>{
+  filteredTasks.forEach((task)=>{
 
-const li=document.createElement("li")
+    const li=document.createElement("li")
 
-if(task.completed){
-li.classList.add("completed")
-}
+    if(task.completed){
+      li.classList.add("completed")
+    }
 
-const span=document.createElement("span")
-span.textContent=task.text
+    const span=document.createElement("span")
+    span.textContent=task.text
+   
+    const completeBtn = document.createElement("button")
+    completeBtn.textContent = task.completed ? "Uncomplete" : "Complete"
+    completeBtn.onclick = () => toggleTask(task.id)
 
-const completeBtn=document.createElement("button")
-completeBtn.textContent="✓"
-completeBtn.onclick=()=>toggleTask(index)
+    const editBtn=document.createElement("button")
+    editBtn.textContent="Edit"
+    editBtn.onclick=()=>editTask(task.id)
 
-const editBtn=document.createElement("button")
-editBtn.textContent="Edit"
-editBtn.onclick=()=>editTask(index)
+    const deleteBtn=document.createElement("button")
+    deleteBtn.textContent="Delete"
+    deleteBtn.onclick=()=>deleteTask(task.id)
 
-const deleteBtn=document.createElement("button")
-deleteBtn.textContent="X"
-deleteBtn.onclick=()=>deleteTask(index)
+    li.appendChild(span)
+    li.appendChild(completeBtn)
+    li.appendChild(editBtn)
+    li.appendChild(deleteBtn)
 
-li.appendChild(span)
-li.appendChild(completeBtn)
-li.appendChild(editBtn)
-li.appendChild(deleteBtn)
+    taskList.appendChild(li)
 
-taskList.appendChild(li)
-
-})
+  })
 }
 
 renderTasks()
