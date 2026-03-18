@@ -3,16 +3,20 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"golang/routes"
+	"github.com/gin-gonic/gin"
+	"golang/database"
 )
 
 func main(){
-		routes.GetUserRoute()
-		routes.CreateUserRoute()
+	 database.ConnectDB()
 
-	fmt.Println("Server running on port 8000")
-	http.ListenAndServe(":8000", nil)
+	r := gin.Default()
+
+	routes.UserRoutes(r)
+
+	fmt.Println("Server running on port http://localhost:8000")
+	r.Run(":8000")
 }
 
 
