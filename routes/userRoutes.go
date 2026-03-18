@@ -1,13 +1,13 @@
 package routes
 import (
-"net/http"
-"golang/controllers"
+"golang/handler"
+"github.com/gin-gonic/gin"
 )
 
-func GetUserRoute() {
-	http.HandleFunc("/users", controllers.GetUsers)
-}
 
-func CreateUserRoute() {
-	http.HandleFunc("/users/create", controllers.CreateUser)
+func UserRoutes(r *gin.Engine) {
+	r.GET("/users", handler.GetUsers)
+	r.POST("/users/create", handler.CreateUser)
+	r.PUT("/users/:id", handler.UpdateUser)
+	r.DELETE("/users/:id", handler.DeleteUser)
 }
